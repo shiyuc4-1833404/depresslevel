@@ -6,15 +6,15 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "Caffiene Consumption and Depression"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - Shiyun Chen (sc5324)
+    - Anqi Wang (aw3615)
+  repo-url: https://github.com/shiyuc4-1833404/depresslevel
   date: today
   page-footer:
     right: |
-      This book was built with <a href="https://quarto.org/">Quarto</a>.
+      This book was built with <a href=" ">Quarto</a >.
   repo-actions: [edit, issue]
   chapters:
     - index.qmd
@@ -27,5 +27,3 @@ format:
   html:
     theme: cosmo
     code-fold: true
-
-
