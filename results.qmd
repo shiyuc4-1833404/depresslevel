@@ -9,7 +9,7 @@ library(dplyr)
 library(haven)
 library(ggplot2)
 library(readr)
-data <- read_xpt("/Users/shiyun/Desktop/P_DR1IFF.XPT")
+data <- read_xpt("/Users/angelina/Documents/CU/23FALL/5702/Final Project/P_DR1IFF.XPT")
 depress <- read_xpt("P_DPQ.XPT")
 data2 <- dplyr::select(data, SEQN, DR1ICAFF)
 data2 <- data2 |>
@@ -70,6 +70,24 @@ merged_info <- merged_info |>
     TRUE ~ as.character(maritalStatus)))
 ```
 
+## Plot7
+```{r}
+library("ggpubr")
+high <- ggplot(data=merged_info,aes(x = CaffConsump)) +
+  geom_histogram() +
+  xlim(200, 800) +
+  ylim(0,200) +
+  ggtitle("Histogram of Caffine Consumption Lower Part") +
+  xlab("Caffine Consumption")
+low <- ggplot(data=merged_info,aes(x = CaffConsump)) +
+  geom_histogram() +
+  xlim(800, max(merged_info$CaffConsump)) +
+  ylim(0,20) +
+  ggtitle("Histogram of Caffine Consumption Higher Part") +
+  xlab("Caffine Consumption")
+ggarrange(high, low, ncol = 1, nrow = 2)
+```
+
 ## Plot1
 ```{r}
 # Plot1
@@ -83,6 +101,16 @@ ggplot(merged_info, aes(depressScore, CaffConsump)) +
   ylab("Caffeine Intake") +
   ggtitle("Scatterplot of Caffeine Intake vs. Depression Score")
 ```
+## Plot4
+```{r}
+ggplot(merged_info) +
+  geom_hex(aes(x = CaffConsump, y = depressScore), bins = 10) +
+  labs(
+    title = "Square Heatmap of Bin Counts",
+    x = "Caffeine Consumption",
+    y = "depressScore")
+```
+
 ## Plot2
 ```{r}
 ggplot(merged_info, aes(Income)) +
@@ -102,15 +130,7 @@ ggplot(merged_info, aes(x=Income, y=depressLevel, fill = depressLevel)) +
   labs(title="I/P Ratio horizontal boxplots and ridgeline plots vs. Depression Level",
        x="I/P Ratio", y = "Depression Level")
 ```
-## Plot4
-```{r}
-ggplot(merged_info) +
-  geom_hex(aes(x = CaffConsump, y = depressScore), bins = 10) +
-  labs(
-    title = "Square Heatmap of Bin Counts",
-    x = "Caffeine Consumption",
-    y = "depressScore")
-```
+
 ## Plot5
 ```{r}
 library(forcats)
@@ -146,23 +166,7 @@ mosaic(~ConsumpLevel + depressLevel,
        highlighting = "depressLevel",
        highlighting_fill = c("#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"))
 ```
-## Plot7
-```{r}
-library("ggpubr")
-high <- ggplot(data=merged_info,aes(x = CaffConsump)) +
-  geom_histogram() +
-  xlim(200, 800) +
-  ylim(0,200) +
-  ggtitle("Histogram of Caffine Consumption Lower Part") +
-  xlab("Caffine Consumption")
-low <- ggplot(data=merged_info,aes(x = CaffConsump)) +
-  geom_histogram() +
-  xlim(800, max(merged_info$CaffConsump)) +
-  ylim(0,20) +
-  ggtitle("Histogram of Caffine Consumption Higher Part") +
-  xlab("Caffine Consumption")
-ggarrange(high, low, ncol = 1, nrow = 2)
-```
+
 ## Plot8
 ```{r}
 library(GGally)
