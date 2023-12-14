@@ -33,7 +33,8 @@ Missing Pattern for Caffeine Dataset:
 library(dplyr)
 library(haven)
 library(redav)
-data <- read_xpt("/Users/angelina/Documents/CU/23FALL/5702/Final Project/P_DR1IFF.XPT")
+# data <- read_xpt("/Users/angelina/Documents/CU/23FALL/5702/Final Project/P_DR1IFF.XPT")
+data <- read_xpt("/Users/shiyun/Desktop/P_DR1IFF.XPT")
 data2 <- dplyr::select(data, SEQN, DR1ICAFF)
 data2 <- data2 |>
   group_by(SEQN) |>
