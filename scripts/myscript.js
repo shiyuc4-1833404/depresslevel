@@ -1,125 +1,112 @@
 // add your JavaScript/D3 to this file
 
-  const w = 400;
-  const h = 300;
-  const margin = {top: 25, right: 0, bottom: 25,
-      left: 25};
-  const innerWidth = w - margin.left - margin.right;
-  const innerHeight = h - margin.top - margin.bottom;
+// Define your datasets here
+  const dataSets = {
+    "Remission": [
+        {Income: '0-1', Frequency: 839},
+        {Income: '1-2', Frequency: 1264},
+        {Income: '2-3', Frequency: 849 },
+        {Income: '3-4', Frequency: 602 },
+        {Income: '4-5', Frequency: 494 },
+        {Income: '5+', Frequency: 1102}],
+    "Mild": [
+        {Income: '0-1', Frequency: 218},
+        {Income: '1-2', Frequency: 284},
+        {Income: '2-3', Frequency: 150 },
+        {Income: '3-4', Frequency: 84 },
+        {Income: '4-5', Frequency: 60 },
+        {Income: '5+', Frequency: 102}],
+    "Moderate": [
+        {Income: '0-1', Frequency: 218},
+        {Income: '1-2', Frequency: 93},
+        {Income: '2-3', Frequency: 93 },
+        {Income: '3-4', Frequency: 42 },
+        {Income: '4-5', Frequency: 30 },
+        {Income: '5+', Frequency: 15}],
+    "Moderately severe": [
+        {Income: '0-1', Frequency: 35},
+        {Income: '1-2', Frequency: 43},
+        {Income: '2-3', Frequency: 15 },
+        {Income: '3-4', Frequency: 6 },
+        {Income: '4-5', Frequency: 9 },
+        {Income: '5+', Frequency: 9}],
+    "Severe": [
+        {Income: '0-1', Frequency: 23},
+        {Income: '1-2', Frequency: 13},
+        {Income: '2-3', Frequency: 5 },
+        {Income: '3-4', Frequency: 3 },
+        {Income: '4-5', Frequency: 2 },
+        {Income: '5+', Frequency: 0}]};
 
-  const svg = d3.select("div#plot")
-      .append("svg")
-      .attr("width", w)
-      .attr("height", h);
 
-  svg.append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", w)
-      .attr("height", h)
-      .attr("fill", "lightblue");
+// Set up dimensions and margins for the graph
+  const margin = { top: 10, right: 30, bottom: 30, left: 40 },
+  width = 460 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
 
-  const bardata = [300, 100, 150, 220, 70, 270];
+// Append the svg object to the div called 'plot'
+  const svg = d3.select("#plot")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const xScale = d3.scaleBand()
-      .domain(d3.range(bardata.length))
-      .range([0, innerWidth])
-      .paddingInner(.1);
+// Create scales
+  const x = d3.scaleBand()
+    .range([0, width])
+    .padding(0.1);
 
-  const yScale = d3.scaleLinear()
-      .domain([0, d3.max(bardata)])
-      .range([innerHeight, 0])
+  const y = d3.scaleLinear()
+    .range([height, 0]);
 
-  const xAxis = d3.axisBottom()
-      .scale(xScale);
-
-  const yAxis = d3.axisLeft()
-      .scale(yScale);
-
-  const bars = svg.append("g")
-      .attr("id", "plot")
-      .attr("transform", `translate (${margin.left}, ${margin.top})`)
-    .selectAll("rect")
-      .data(bardata);
-
-  bars.enter().append("rect")
-      .attr("x", (d, i) => xScale(i))
-      .attr("y", d => yScale(d))
-      .attr("width", xScale.bandwidth())
-      .attr("height", d => innerHeight - yScale(d))
-      .attr("fill", "blue");
-
+// Create and add the axes
   svg.append("g")
-      .attr("class", "xAxis")
-      .attr("transform", `translate (${margin.left}, ${h - margin.bottom})`)
-      .call(xAxis);
+  .attr("transform", `translate(0,${height})`)
+  .attr("class", "x-axis");
 
-  svg.append("g")
-      .attr("class", "yAxis")
-      .attr("transform", `translate (${margin.left}, ${margin.top})`)
-      .call(yAxis);
+svg.append("g")
+  .attr("class", "y-axis");
 
-// General Update Pattern
 
-  function update(data) {
+// Update function
+function update(selectedOption) {
+    // Process data
+    const data = dataSets[selectedOption];
 
-    xScale.domain(d3.range(data.length));
+    // Update scales
+    x.domain(data.map(d => d.Income)); // Use 'Income' for the x-axis
+    y.domain([0, d3.max(data, d => d.Frequency)]); // Use 'Frequency' for the y-axis
 
-    yScale.domain([0, d3.max(data)]);
+    // Bind data to bars
+    const bars = svg.selectAll(".bar")
+        .data(data, d => d.Income); // Use 'Income' as key
 
-    const bars = svg.select("#plot")
-        .selectAll("rect")
-        .data(data);
-
+    // Enter new bars
     bars.enter().append("rect")
-      .merge(bars)
-      .attr("x", (d, i) => xScale(i))
-      .attr("y", d => yScale(d))
-      .attr("width", xScale.bandwidth())
-      .attr("height", d => innerHeight - yScale(d))
-      .attr("fill", "blue");
+        .attr("class", "bar")
+        .attr("x", d => x(d.Income))
+        .attr("width", x.bandwidth())
+        .merge(bars) // Merge with existing bars
+        .transition().duration(1000)
+        .attr("y", d => y(d.Frequency))
+        .attr("height", d => height - y(d.Frequency));
 
+    // Update axes
+    svg.select(".x-axis").call(d3.axisBottom(x));
+    svg.select(".y-axis").call(d3.axisLeft(y));
+
+    // Remove old bars
     bars.exit().remove();
+}
 
-    svg.select(".xAxis")
-        .call(xAxis);
+// Initialize plot with first dataset
+update("Remission");
 
-    svg.select(".yAxis")
-        .call(yAxis);
-
-  }
-
-
-  d3.select("#dropdown").on("change", function(d) {
-    var selectedOption = d3.select(this).property("value");
-    updateVisualization(selectedOption);
-  });
-
-  function updateVisualization(option) {
-    if(option === "Remission") {
-      var newvalue = Math.floor(Math.random()*400);
-      bardata.push(newvalue);
-      update(bardata);
-    } else if(option === "Mild") {
-      var newvalue = Math.floor(Math.random()*400);
-      bardata.push(newvalue);
-      update(bardata);
-    } else if(option === "Moderate") {
-      var newvalue = Math.floor(Math.random()*400);
-      bardata.push(newvalue);
-      update(bardata);
-    } else if(option === "Moderately severe") {
-      var newvalue = Math.floor(Math.random()*400);
-      bardata.push(newvalue);
-      update(bardata);
-    } else if(option === "Severe") {
-      var newvalue = Math.floor(Math.random()*400);
-      bardata.push(newvalue);
-      update(bardata);
-    }
-  }
-
-  function remove() {
-    bardata.pop();
-    update(bardata);
-  };
+// Dropdown change event listener
+d3.select("#dropdown").on("change", function(event) {
+    // Get new selection
+    const selectedOption = d3.select(this).property("value");
+    // Update chart
+    update(selectedOption);
+});

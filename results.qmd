@@ -3,7 +3,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 # Results
 ```{r,echo=FALSE}
-# Deal with Caffeine and Depression dataset
+# Deal with datasets
 library(ggridges)
 library(dplyr)
 library(haven)

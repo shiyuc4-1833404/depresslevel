@@ -187,7 +187,7 @@ ul.task-list li input[type="checkbox"] {
 <p>The plan is divided into three parts: merging datasets, processing data, and using exploratory techniques to answer research questions.</p>
 <section id="merge-datasets" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="merge-datasets"><span class="header-section-number">2.2.1</span> Merge Datasets</h3>
-<p>As the issue we mentioned in the above section, this problem is due to the investigation including the time of eating occasion for each person of the whole day ranging from 00:00 to 23:59. Since we only need to analyze caffeine, we can solve it by only keeping SEQN and caffeine intake columns for the Dietary dataset. Then, we can group the SEQN and sum up the caffeine intake of each participant from all time slots for the whole day. Now, we can merge two datasets together by SEQN.</p>
+<p>As the issue we mentioned in the above section, this problem is due to the investigation including the time of eating occasion for each person of the whole day ranging from 00:00 to 23:59. Since we only need to analyze caffeine, we can solve it by only keeping SEQN and caffeine intake columns for the Dietary dataset. Then, we can group the SEQN and sum up the caffeine intake of each participant from all time slots for the whole day. Now, we can merge three datasets together by SEQN.</p>
 </section>
 <section id="process-data" class="level3" data-number="2.2.2">
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="process-data"><span class="header-section-number">2.2.2</span> Process Data</h3>
@@ -196,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="use-exploratory-techniques" class="level3" data-number="2.2.3">
 <h3 data-number="2.2.3" class="anchored" data-anchor-id="use-exploratory-techniques"><span class="header-section-number">2.2.3</span> Use Exploratory Techniques</h3>
-<p>The dataset is being cleaned up now. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. So, we can create a new column called <code>depressionLevel</code> according to the total score of each participant and then create a scatter plot of caffeine consumption (y-axis) vs.&nbsp;depression score (x-axis) faceted by depression level so that we can learn the relationship between caffeine consumption and depression level by observing the scale of y. Also, we can use the command <code>cut()</code> with <code>quantile()</code> to divide the caffeine consumption into four groups of roughly equal size and create a depression level bar chart faceted by the new caffeine consumption group to view the trend.</p>
+<p>The dataset is being cleaned up now. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. So, we can create a new column called <code>depressionLevel</code> according to the total score of each participant and then create a scatter plot of caffeine consumption (y-axis) vs.&nbsp;depression score (x-axis) faceted by depression level so that we can learn the relationship between depression level and caffeine consumption, race, age, gender, and income ratio by observing the scale of y. We can compare the data by using histogram, mosaic plot, scatterplot, and etc.</p>
 </section>
 </section>
 <section id="missing-value-analysis" class="level2" data-number="2.3">
@@ -207,14 +207,14 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Since the dietary dataset includes a total of 84 variables and we only need the factor caffeine intake, I just keep SEQN and caffeine columns to analyze the missing pattern. From the graph, we can see that no SEQN is missing. There are approximately 150 missing values for caffeine consumption.</p>
+<p>Since the dietary dataset includes a total of 84 variables and we only need the factor caffeine intake, I just keep SEQN and caffeine columns to analyze the missing pattern. From the graph, we can see that no SEQN is missing. There are approximately 200 missing values for caffeine consumption.</p>
 <p>Missing Pattern for Depression Dataset:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>From the graph, we can see that there is no missing value for SEQN. Question with code 100 has most missing values, which is approximately 2000. Question with code from 10 to 90 has approximately the similar number of missing values, which is around 400 to 500. For the missing pattern, we can see that the missing value always appeared in consecutive questions. There are about 3000 participants answer all ten questions; around 1700 participants who only does not answer Question with code 100; less than 500 participants does not answer any of the ten questions. Participants responded the survey starting from the question with code 010 to 100. For each of the rest four patterns: only 1 participant does not answer last two questions; 1 participant does not answer last 5 questions; 1 participant only answer first three questions; and 1 participant only answer first question. Since the amount of people is too small, we cannot see clearly from the row count graph.</p>
+<p>From the graph, we can see that there is no missing value for SEQN. Question with code 100 has most missing values, which is over 2500. Question with code from 10 to 90 has approximately the similar number of missing values, which is around 400 to 500. For the missing pattern, we can see that the missing value always appeared in consecutive questions. There are over 5000 participants answer all ten questions; around 2500 participants who only does not answer Question with code 100; approximately 500 participants does not answer any of the question. Participants responded the survey starting from the question with code 010 to 100. For each of the rest four patterns: only 1 participant does not answer last two questions; 1 participant only answer the first question; 1 participant does not answer last 5 questions; and 1 participant only answer first three questions. Since the amount of people is too small, we cannot see clearly from the row count graph.</p>
 
 
 </section>
