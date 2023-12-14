@@ -84,6 +84,13 @@
     "text": "3.8 Unraveling the Mystery: Age, Money, and Caffeine Consumption’s Role in Depression\n\n\nCode\nscatter_custom &lt;- function(data, mapping, ...) {\n  ggplot(data = data, mapping = mapping) +\n    geom_point(size = 0.5, alpha = 0.3) + \n    theme_minimal()\n}\n\nggpairs(merged_info, \n        columns = c(12, 2, 15, 17), \n        title = \"Scatter Plot Matrix for Dataset\",\n        upper = list(continuous = wrap(\"cor\", size = 4)),\n        lower = list(continuous = wrap(scatter_custom))\n)\n\n\n\n\n\nLet’s dive into how people’s depression levels are connected to their age, income, and how much caffeine they drink. Put our focus to the top row of the above graph. What we find is that income, especially when compared to the poverty line, has the strongest link to depression scores. This suggests that wealthier people often have lower depression scores. On the other hand, a person’s age and the amount of caffeine they consume don’t seem to have a strong relationship with their depression score."
   },
   {
+    "objectID": "d3graph.html",
+    "href": "d3graph.html",
+    "title": "4  Interactive graph",
+    "section": "",
+    "text": "Add bar\n\n\nRemove bar"
+  },
+  {
     "objectID": "conclusion.html",
     "href": "conclusion.html",
     "title": "5  Conclusion",

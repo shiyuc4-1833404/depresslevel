@@ -1,0 +1,22 @@
+# Interactive graph
+
+<style>
+  * {
+    font-family: sans-serif;
+  }
+</style>
+
+<div id="plot">
+</div>
+
+<p></p>
+<select id="dropdown">
+  <option value="Remission">Remission</option>
+  <option value="Mild">Mild</option>
+  <option value="Moderate">Moderate</option>
+  <option value="Moderately severe">Moderately severe</option>
+  <option value="Severe">Severe</option>
+</select>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="scripts/myscript.js"></script>
