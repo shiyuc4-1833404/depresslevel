@@ -175,13 +175,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#plot7" id="toc-plot7" class="nav-link active" data-scroll-target="#plot7"><span class="header-section-number">3.1</span> Plot7</a></li>
-  <li><a href="#plot1" id="toc-plot1" class="nav-link" data-scroll-target="#plot1"><span class="header-section-number">3.2</span> Plot1</a></li>
-  <li><a href="#plot4" id="toc-plot4" class="nav-link" data-scroll-target="#plot4"><span class="header-section-number">3.3</span> Plot4</a></li>
-  <li><a href="#plot3" id="toc-plot3" class="nav-link" data-scroll-target="#plot3"><span class="header-section-number">3.4</span> Plot3</a></li>
+  <li><a href="#plot1" id="toc-plot1" class="nav-link active" data-scroll-target="#plot1"><span class="header-section-number">3.1</span> Plot1</a></li>
+  <li><a href="#plot2" id="toc-plot2" class="nav-link" data-scroll-target="#plot2"><span class="header-section-number">3.2</span> Plot2</a></li>
+  <li><a href="#plot3" id="toc-plot3" class="nav-link" data-scroll-target="#plot3"><span class="header-section-number">3.3</span> Plot3</a></li>
+  <li><a href="#plot4" id="toc-plot4" class="nav-link" data-scroll-target="#plot4"><span class="header-section-number">3.4</span> Plot4</a></li>
   <li><a href="#plot5" id="toc-plot5" class="nav-link" data-scroll-target="#plot5"><span class="header-section-number">3.5</span> Plot5</a></li>
   <li><a href="#plot6" id="toc-plot6" class="nav-link" data-scroll-target="#plot6"><span class="header-section-number">3.6</span> Plot6</a></li>
-  <li><a href="#plot8" id="toc-plot8" class="nav-link" data-scroll-target="#plot8"><span class="header-section-number">3.7</span> Plot8</a></li>
+  <li><a href="#plot7" id="toc-plot7" class="nav-link" data-scroll-target="#plot7"><span class="header-section-number">3.7</span> Plot7</a></li>
+  <li><a href="#plot8" id="toc-plot8" class="nav-link" data-scroll-target="#plot8"><span class="header-section-number">3.8</span> Plot8</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/shiyuc4-1833404/depresslevel/edit/main/results.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/shiyuc4-1833404/depresslevel/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -205,8 +206,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="plot7" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="plot7"><span class="header-section-number">3.1</span> Plot7</h2>
+<section id="plot1" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="plot1"><span class="header-section-number">3.1</span> Plot1</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -231,50 +232,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>First, let’s look at how much caffeine people in the study drink each day, measured in milligrams. We’ve split the chart into two parts to make it easier to see what’s going on. In the first chart, most people fall into the 200 to 400 milligram range. Then, the numbers spread out more evenly up to 600 milligrams. It’s important to note that the two charts use different scales on the vertical axis, which helps us understand both the lower and higher caffeine consumption levels. The lower levels have more people, while the higher levels have fewer. Also, in the first chart, the bars are all next to each other without any gaps, showing a continuous range of caffeine amounts. In the second chart, there are some gaps between the bars. This tells us that most people in the study have a caffeine intake of 200 to 800 milligrams a day, but a smaller group consumes a lot more, between 1000 to 4000 milligrams.</p>
 </section>
-<section id="plot1" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="plot1"><span class="header-section-number">3.2</span> Plot1</h2>
+<section id="plot2" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="plot2"><span class="header-section-number">3.2</span> Plot2</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally) </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>scatter_custom <span class="ot">&lt;-</span> <span class="cf">function</span>(data, mapping, ...) {</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> data, <span class="at">mapping =</span> mapping) <span class="sc">+</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(merged_info, </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">2</span>, <span class="dv">15</span>, <span class="dv">17</span>), </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Scatter Plot Matrix for Dataset"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"cor"</span>, <span class="at">size =</span> <span class="dv">4</span>)),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(scatter_custom))</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(merged_info) <span class="sc">+</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hex</span>(<span class="fu">aes</span>(<span class="at">x =</span> CaffConsump, <span class="at">y =</span> depressScore), <span class="at">bins =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Square Heatmap of Bin Counts"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Caffeine Consumption"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"depressScore"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="results_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Let’s dive into how people’s depression levels are connected to their age, income, and how much caffeine they drink. First, I’ll explain how we measure depression. Every person in our study answered 9 questions about how they’ve been feeling in the last two weeks. Each question tries to find out how often they’ve felt symptoms of depression, like feeling down or losing interest in things. They can answer with ‘not at all,’ ‘several days,’ ‘more than half the days,’ or ‘nearly every day,’ and these answers get points from 0 to 3. Then, we add up all the points from these questions. The total score can be between 0 and 27 - where 0 means no signs of depression, and 27 means very severe depression. Now, change our focus to the top row of the above graph. What we find is that income, especially when compared to the poverty line, has the strongest link to depression scores. This suggests that wealthier people often have lower depression scores. On the other hand, a person’s age and the amount of caffeine they consume don’t seem to have a strong relationship with their depression score.</p>
+<p>From the chart we looked at, it seems like there doens’t have an association between how much caffeine people drink and their levels of depression. When people consume a lot of caffeine, like between 2000-4000 mg, they mostly have low depression scores, but this could be because there aren’t many people in the study who drink that much caffeine. When we look at those who drink less caffeine, which is where most of the study’s data is, the depression scores vary quite a bit. In particular, if you look at the lower left part of the chart, you’ll notice that many people who don’t drink much caffeine also report lower levels of depression.</p>
 </section>
-<section id="plot4" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="plot4"><span class="header-section-number">3.3</span> Plot4</h2>
+<section id="plot3" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="plot3"><span class="header-section-number">3.3</span> Plot3</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(merged_info) <span class="sc">+</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hex</span>(<span class="fu">aes</span>(<span class="at">x =</span> CaffConsump, <span class="at">y =</span> depressScore), <span class="at">bins =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Square Heatmap of Bin Counts"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Caffeine Consumption"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"depressScore"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggparcoord</span>(<span class="at">data =</span> merged_info, <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">15</span>),<span class="at">alphaLines =</span> <span class="fl">0.01</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'Parallel Coordinates Plot'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="results_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>From the chart we looked at, it seems like there doens’t have an association between how much caffeine people drink and their levels of depression. When people consume a lot of caffeine, like between 2000-4000 mg, they mostly have low depression scores, but this could be because there aren’t many people in the study who drink that much caffeine. When we look at those who drink less caffeine, which is where most of the study’s data is, the depression scores vary quite a bit. In particular, if you look at the lower left part of the chart, you’ll notice that many people who don’t drink much caffeine also report lower levels of depression.<br>
-## Plot2</p>
+<p>Now, we will explore the relationship between age and depression level. This time we will draw a parallel coordinates. From the above graph, we can see that the lines are randomly crossing each other. We can hardly observe a clear pattern of positively or negatively correlated lines. Thus, what we see is that age and depression level are not highly correlated.</p>
+</section>
+<section id="plot4" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="plot4"><span class="header-section-number">3.4</span> Plot4</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -292,8 +283,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Now, let’s explore how people’s levels of depression relate to their income ratio. We’ll start by looking at the spread of income ratios in our data.This ratio compares family income to the poverty level, with numbers close to 0 meaning less income and numbers close to 5 meaning more income. We used a type of chart called a density histogram to show this.It turns out that the highest bar on the chart is at an income ratio of 5. This happens because in our data, any income higher than 5 is just marked as 5. If we don’t focus too much on this part, we notice that the chart leans towards the right with a peak around 1. This tells us that a lot of the data is on the lower end of the income scale, indicating lower income levels. The way the chart stretches to the right shows that higher incomes are less common, with most of the data bunching up at the lower end.</p>
 </section>
-<section id="plot3" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="plot3"><span class="header-section-number">3.4</span> Plot3</h2>
+<section id="plot5" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="plot5"><span class="header-section-number">3.5</span> Plot5</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -313,8 +304,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Looking at the ridgeline plots, there’s a clear change in how income is spread out. For lower levels of depression, the spread of income shows two peaks (this is called bimodal). But as depression becomes more severe, the pattern changes to a right-skewed distribution, meaning more people with severe depression have lower incomes.</p>
 <p>In conclusion, what we see is that lower income tends to be linked with higher levels of depression.</p>
 </section>
-<section id="plot5" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="plot5"><span class="header-section-number">3.5</span> Plot5</h2>
+<section id="plot6" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="plot6"><span class="header-section-number">3.6</span> Plot6</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -331,8 +322,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Let’s check out the race and gender of the people who answered our survey. We grouped races into five categories: White, Black, Hispanic, Asian, and Other. The ‘Other’ category includes people who identify with more than one race. Most of our survey participants are White, followed by Black, then Hispanic, and the smallest group is Asian. We can also note that within each racial group, the number of females and males is pretty much even, almost like a 50-50 split.</p>
 </section>
-<section id="plot6" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="plot6"><span class="header-section-number">3.6</span> Plot6</h2>
+<section id="plot7" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="plot7"><span class="header-section-number">3.7</span> Plot7</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -365,19 +356,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>To investigate the relationship between race, gender, and depression level, we will plot a mosaic graph since they are all categorical variables. From the above graph, we can see that the proportion of each depression level are similar for different race. What’s more, the total proportion of each depression level for male and female is also similar. Thus, we can hardly tell that there is a clear relationship between gender, race, and depression level.</p>
 </section>
-<section id="plot8" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="plot8"><span class="header-section-number">3.7</span> Plot8</h2>
+<section id="plot8" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="plot8"><span class="header-section-number">3.8</span> Plot8</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggparcoord</span>(<span class="at">data =</span> merged_info, <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">15</span>),<span class="at">alphaLines =</span> <span class="fl">0.01</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'Parallel Coordinates Plot'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>scatter_custom <span class="ot">&lt;-</span> <span class="cf">function</span>(data, mapping, ...) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> data, <span class="at">mapping =</span> mapping) <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(merged_info, </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">2</span>, <span class="dv">15</span>, <span class="dv">17</span>), </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Scatter Plot Matrix for Dataset"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"cor"</span>, <span class="at">size =</span> <span class="dv">4</span>)),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(scatter_custom))</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="results_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Now, we will explore the relationship between age and depression level. This time we will draw a parallel coordinates. From the above graph, we can see that the lines are randomly crossing each other. We can hardly observe a clear patern of positively or negatively correlated lines. Thus, what we see is that age and depression level are not highly correlated.</p>
+<p>Let’s dive into how people’s depression levels are connected to their age, income, and how much caffeine they drink. First, I’ll explain how we measure depression. Every person in our study answered 9 questions about how they’ve been feeling in the last two weeks. Each question tries to find out how often they’ve felt symptoms of depression, like feeling down or losing interest in things. They can answer with ‘not at all,’ ‘several days,’ ‘more than half the days,’ or ‘nearly every day,’ and these answers get points from 0 to 3. Then, we add up all the points from these questions. The total score can be between 0 and 27 - where 0 means no signs of depression, and 27 means very severe depression. Now, change our focus to the top row of the above graph. What we find is that income, especially when compared to the poverty line, has the strongest link to depression scores. This suggests that wealthier people often have lower depression scores. On the other hand, a person’s age and the amount of caffeine they consume don’t seem to have a strong relationship with their depression score.</p>
 
 
 </section>
