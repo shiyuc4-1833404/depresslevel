@@ -141,8 +141,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description"><span class="header-section-number">2.1</span> Description</a></li>
-  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</a></li>
+  <li><a href="#technical-description" id="toc-technical-description" class="nav-link active" data-scroll-target="#technical-description"><span class="header-section-number">2.1</span> Technical description</a></li>
+  <li><a href="#research-plan" id="toc-research-plan" class="nav-link" data-scroll-target="#research-plan"><span class="header-section-number">2.2</span> Research plan</a>
+  <ul class="collapse">
+  <li><a href="#merge-datasets" id="toc-merge-datasets" class="nav-link" data-scroll-target="#merge-datasets"><span class="header-section-number">2.2.1</span> Merge Datasets</a></li>
+  <li><a href="#process-data" id="toc-process-data" class="nav-link" data-scroll-target="#process-data"><span class="header-section-number">2.2.2</span> Process Data</a></li>
+  <li><a href="#use-exploratory-techniques" id="toc-use-exploratory-techniques" class="nav-link" data-scroll-target="#use-exploratory-techniques"><span class="header-section-number">2.2.3</span> Use Exploratory Techniques</a></li>
+  </ul></li>
+  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/shiyuc4-1833404/depresslevel/edit/main/data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/shiyuc4-1833404/depresslevel/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -166,11 +172,48 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="description" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="description"><span class="header-section-number">2.1</span> Description</h2>
+<section id="technical-description" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="technical-description"><span class="header-section-number">2.1</span> Technical description</h2>
+<p>Below are the two datasets that we propose to draw on for the project:<br>
+1. <a href="https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=Questionnaire&amp;Cycle=2017-2018">Mental Health - Depression Screener</a><br>
+2. <a href="https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=Dietary&amp;Cycle=2017-2018">Dietary Interview - Individual Foods, First Day</a></p>
+<p>Both of those datasets are downloaded from CDC National Health and Nutrition Examination Survey. The survey examines a nationally representative sample of about 6,000 people each year. The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions.</p>
+<p>This project was to examine the dataset from 2017 to 2018. There were 7,640 participants who provided reliable responses to inquiries about caffeine consumption, and 5,533 participants who answered questions regarding depression. Participants’ depression levels were assessed using the 9-item Patient Health Questionnaire depression scale. For each symptom question, points are scored from 0 to 3, with 0 (not at all), 1 (several days), 2 (more than half the days), and 3 (nearly every day). The caffeine intake was collected in-person in the Mobile Examination Center of NHANES. Participants were asked to provide detailed dietary intake information during the 24-hr period prior to the interview. NHANES then calculated the energy and 64 nutrients (including caffeine) of each food using the USDA’s Food and Nutrient Database for Dietary Studies, and estimated participants’ caffeine intake.</p>
+<p>Since the data are in the XPT (SAS file) format, we can use the haven package and the command <code>read_xpt</code> to import the data. In NHANES data, each sample person has a unique identifier called sequence number (SEQN). The next step is to merge two datasets by a unique identifier. However, the data file <code>Dietary Interview - Individual Foods</code> contains multiple records for each sample person and makes them not a unique identifier. Also, the number of participants who took the survey for caffeine consumption is more than depression. When we merge data, this will cause the problem of missing data. The way to solve these issues will be described in the <code>Research plan</code> section.</p>
 </section>
-<section id="missing-value-analysis" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</h2>
+<section id="research-plan" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="research-plan"><span class="header-section-number">2.2</span> Research plan</h2>
+<p>The plan is divided into three parts: merging datasets, processing data, and using exploratory techniques to answer research questions.</p>
+<section id="merge-datasets" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="merge-datasets"><span class="header-section-number">2.2.1</span> Merge Datasets</h3>
+<p>As the issue we mentioned in the above section, this problem is due to the investigation including the time of eating occasion for each person of the whole day ranging from 00:00 to 23:59. Since we only need to analyze caffeine, we can solve it by only keeping SEQN and caffeine intake columns for the Dietary dataset. Then, we can group the SEQN and sum up the caffeine intake of each participant from all time slots for the whole day. Now, we can merge two datasets together by SEQN.</p>
+</section>
+<section id="process-data" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="process-data"><span class="header-section-number">2.2.2</span> Process Data</h3>
+<p>For the Depression part of the merged dataset, patients will be asked nine questions and they will score them from 0 to 3. In addition to those 4 scores, participants who wrote down 7 means that they refused to answer and 9 means that they don’t know. For these cases, we just treat them as 0 in this project. In addition, participants are actually being asked 10 questions, the last question in the survey does not relate to depression symptoms over the past 2 weeks, and so we decided to delete that column. In order to analyze the depression level more easily, the scores are summed to a total score between 0 and 27. By doing this, we can now see the relationship between caffeine intake and depression level more clearly.</p>
+<p>Since the number of participants who took the survey for caffeine consumption is more than depression, there will be missing values in the merged dataset. Also, both the original dietary and depression dataset, which will be explained in the <code>missing value</code> section, include missing data. We shall delete these data by using the command <code>na.omit()</code>. After processing the data, there are 4790 participants left who took both dietary interviews and depression surveys.</p>
+</section>
+<section id="use-exploratory-techniques" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="use-exploratory-techniques"><span class="header-section-number">2.2.3</span> Use Exploratory Techniques</h3>
+<p>The dataset is being cleaned up now. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. So, we can create a new column called <code>depressionLevel</code> according to the total score of each participant and then create a scatter plot of caffeine consumption (y-axis) vs.&nbsp;depression score (x-axis) faceted by depression level so that we can learn the relationship between caffeine consumption and depression level by observing the scale of y. Also, we can use the command <code>cut()</code> with <code>quantile()</code> to divide the caffeine consumption into four groups of roughly equal size and create a depression level bar chart faceted by the new caffeine consumption group to view the trend.</p>
+</section>
+</section>
+<section id="missing-value-analysis" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</h2>
+<p>Missing Pattern for Caffeine Dataset:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Since the dietary dataset includes a total of 84 variables and we only need the factor caffeine intake, I just keep SEQN and caffeine columns to analyze the missing pattern. From the graph, we can see that no SEQN is missing. There are approximately 150 missing values for caffeine consumption.</p>
+<p>Missing Pattern for Depression Dataset:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>From the graph, we can see that there is no missing value for SEQN. Question with code 100 has most missing values, which is approximately 2000. Question with code from 10 to 90 has approximately the similar number of missing values, which is around 400 to 500. For the missing pattern, we can see that the missing value always appeared in consecutive questions. There are about 3000 participants answer all ten questions; around 1700 participants who only does not answer Question with code 100; less than 500 participants does not answer any of the ten questions. Participants responded the survey starting from the question with code 010 to 100. For each of the rest four patterns: only 1 participant does not answer last two questions; 1 participant does not answer last 5 questions; 1 participant only answer first three questions; and 1 participant only answer first question. Since the amount of people is too small, we cannot see clearly from the row count graph.</p>
 
 
 </section>

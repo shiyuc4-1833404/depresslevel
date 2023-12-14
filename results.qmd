@@ -1,1 +1,170 @@
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
 # Results
+```{r,echo=FALSE}
+# Deal with Coffeine and Depression dataset
+library(ggridges)
+library(dplyr)
+library(haven)
+library(ggplot2)
+library(readr)
+data <- read_xpt("/Users/shiyun/Desktop/P_DR1IFF.XPT")
+depress <- read_xpt("P_DPQ.XPT")
+data2 <- dplyr::select(data, SEQN, DR1ICAFF)
+data2 <- data2 |>
+  group_by(SEQN) |>
+  dplyr::summarise(CaffConsump = sum(DR1ICAFF))
+merged_data <- merge(data2, depress, by = "SEQN", all = TRUE)
+columns <- colnames(merged_data)[1:11]
+merged_data <- dplyr::select(merged_data, columns)
+merged_data <- na.omit(merged_data)
+for (i in columns) {
+  merged_data[[i]][merged_data[[i]] == 7] <- 0
+  merged_data[[i]][merged_data[[i]] == 9] <- 0
+}
+merged_data$depressScore <- rowSums(merged_data[, 3:ncol(merged_data)])
+merged_data$depressLevel <- merged_data$depressScore
+merged_data <- merged_data |>
+  mutate(depressLevel = case_when(
+    depressLevel >= 0 & depressLevel <= 5 ~ "remission",
+    depressLevel > 5 & depressLevel <= 10 ~ "mild",
+    depressLevel > 10 & depressLevel <= 15 ~ "moderate",
+    depressLevel > 15 & depressLevel <= 20 ~ "moderately severe",
+    depressLevel > 20 ~ "severe",
+    TRUE ~ as.character(depressLevel)))
+```
+
+```{r,echo=FALSE}
+# Deal with Demo dataset
+info <- read_xpt("P_DEMO.XPT")
+oldname <- c("RIAGENDR", "RIDAGEYR", "RIDRETH3", "INDFMPIR", "DMDMARTZ")
+newname <- c("Gender", "Age", "Race", "Income", "maritalStatus")
+info <- dplyr::select(info, SEQN, RIAGENDR, RIDAGEYR, RIDRETH3,
+                      INDFMPIR, DMDMARTZ)
+merged_info <- merge(merged_data, info, by = "SEQN", all = TRUE)
+merged_info <- na.omit(merged_info)
+for (i in 1:5) {
+  names(merged_info)[names(merged_info) == oldname[i]] <- newname[i]
+}
+merged_info <- merged_info |>
+  mutate(Gender = case_when(
+    Gender == 1 ~ "Male",
+    Gender == 2 ~ "Female",
+    TRUE ~ as.character(Gender)))
+
+merged_info <- merged_info |>
+  mutate(Race = case_when(
+    Race == 1 | Race == 2 ~ "Hispanic",
+    Race == 3 ~ "White",
+    Race == 4 ~ "Black",
+    Race == 6 ~ "Asian",
+    Race == 7 ~ "Other",
+    TRUE ~ as.character(Race)))
+
+merged_info <- merged_info |>
+  mutate(maritalStatus = case_when(
+    maritalStatus == 1 ~ "Married",
+    maritalStatus == 2 ~ "Widowed",
+    maritalStatus == 3 ~ "Divorced",
+    TRUE ~ as.character(maritalStatus)))
+```
+
+## Plot1
+```{r}
+# Plot1
+ggplot(merged_info, aes(depressScore, CaffConsump)) +
+        geom_point(size=0.8) +
+  facet_wrap(~factor(depressLevel, levels=c('remission', 'mild', 'moderate',
+                                            'moderately severe', 'severe')),
+             scales="free_y")+
+  # facet_wrap(~depressLevel, scales="free_y") +
+  xlab("Depression Score") +
+  ylab("Caffeine Intake") +
+  ggtitle("Scatterplot of Caffeine Intake vs. Depression Score")
+```
+## Plot2
+```{r}
+ggplot(merged_info, aes(Income)) +
+  geom_histogram(aes(y=after_stat(density)), color = "blue", 
+                 fill = "cornflowerblue", alpha = 0.5) +
+  geom_density(lwd=1.25) +
+  labs(title = "I/P Ratio Distribution",
+       x = "Ratio of family income to poverty", y = "Density") +
+  theme_minimal()
+```
+## Plot3
+```{r}
+ggplot(merged_info, aes(x=Income, y=depressLevel, fill = depressLevel)) + 
+  geom_density_ridges(scale=0.75) +
+  geom_boxplot(width = 0.3, alpha = 0.7) +
+  theme(legend.position = "none") +
+  labs(title="I/P Ratio horizontal boxplots and ridgeline plots vs. Depression Level",
+       x="I/P Ratio", y = "Depression Level")
+```
+## Plot4
+```{r}
+ggplot(merged_info) +
+  geom_hex(aes(x = CaffConsump, y = depressScore), bins = 10) +
+  labs(
+    title = "Square Heatmap of Bin Counts",
+    x = "Caffeine Consumption",
+    y = "depressScore")
+```
+## Plot5
+```{r}
+library(forcats)
+ggplot(merged_info, aes(x=fct_infreq(Race), fill = Gender)) + 
+  geom_bar() +
+  ylab("Count") +
+  xlab("Race") +
+  ggtitle("Frequency of Race by Gender")
+```
+## Plot6
+```{r}
+library(vcd)
+library(vcdExtra)
+library(RColorBrewer)
+library(MASS)
+group <- quantile(merged_info$CaffConsump)
+merged_info$ConsumpLevel <- cut(merged_info$CaffConsump,
+                                breaks=c(group[1]-1, group[2], group[3], group[4], group[5]),
+                                right=TRUE,
+                                left=FALSE,
+                                labels = c("Low", "Mild", "Moderate",
+                                          "High"))
+merged_info <- transform(merged_info, depressLevel = factor(depressLevel, 
+                                                            levels = c("remission", "mild", 
+                                                                       "moderate", "moderately severe",
+                                                                       "severe")))
+mosaic(~ConsumpLevel + depressLevel,
+       labeling=vcd::labeling_border(rot_labels = c(0, 0),
+                                  labeling_args = list(cex = 1)),
+       main="Mosaic Plot of Coffeine Consumption and Depression Level",
+       data=merged_info, direction=c("v","h"),
+       spacing = spacing_dimequal(c(.4, 0)),
+       highlighting = "depressLevel",
+       highlighting_fill = c("#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"))
+```
+## Plot7
+```{r}
+library("ggpubr")
+high <- ggplot(data=merged_info,aes(x = CaffConsump)) +
+  geom_histogram() +
+  xlim(200, 800) +
+  ylim(0,200) +
+  ggtitle("Histogram of Caffine Consumption Lower Part") +
+  xlab("Caffine Consumption")
+low <- ggplot(data=merged_info,aes(x = CaffConsump)) +
+  geom_histogram() +
+  xlim(800, max(merged_info$CaffConsump)) +
+  ylim(0,20) +
+  ggtitle("Histogram of Caffine Consumption Higher Part") +
+  xlab("Caffine Consumption")
+ggarrange(high, low, ncol = 1, nrow = 2)
+```
+## Plot8
+```{r}
+library(GGally)
+ggparcoord(data = merged_info, columns = c(2,12,15),alphaLines = 0.01) + ggtitle('Parallel Coordinates Plot')
+```
