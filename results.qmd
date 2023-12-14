@@ -129,7 +129,6 @@ ggplot(merged_info, aes(Income)) +
        x = "Ratio of family income to poverty", y = "Density") +
   theme_minimal()
 ```
-
 ## Plot3
 ```{r}
 ggplot(merged_info, aes(x=Income, y=depressLevel, fill = depressLevel)) + 
@@ -139,6 +138,13 @@ ggplot(merged_info, aes(x=Income, y=depressLevel, fill = depressLevel)) +
   labs(title="I/P Ratio horizontal boxplots and ridgeline plots vs. Depression Level",
        x="I/P Ratio", y = "Depression Level")
 ```
+After getting a broad overview of how income compares to the poverty line, we're now zooming in to see how this income ratio varies among people with different levels of depression. We're using two kinds of charts for this: boxplots and ridgeline plots. 
+
+Starting with the boxplots, we notice that people with a remission (low) level of depression show the widest range of incomes. But for those with severe depression, the range of incomes is much narrower. Also, the boxplots tend to lean more towards the right as the depression gets more severe, and they shift towards lower incomes as the depression level increases.
+
+Looking at the ridgeline plots, there's a clear change in how income is spread out. For lower levels of depression, the spread of income shows two peaks (this is called bimodal). But as depression becomes more severe, the pattern changes to a right-skewed distribution, meaning more people with severe depression have lower incomes.
+
+In conclusion, what we see is that lower income tends to be linked with higher levels of depression.
 
 ## Plot5
 ```{r}
@@ -171,9 +177,12 @@ mosaic(~depressLevel + Gender + Race,
        highlighting = "depressLevel",
        highlighting_fill = c("#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"))
 ```
+To investigate the relationship between race, gender, and depression level, we will plot a mosaic graph since they are all categorical variables. From the above graph, we can see that the proportion of each depression level are similar for different race. What's more, the total proportion of each depression level for male and female is also similar. Thus, we can hardly tell that there is a clear relationship between gender, race, and depression level.
+
 
 ## Plot8
 ```{r}
 library(GGally)
 ggparcoord(data = merged_info, columns = c(12,15),alphaLines = 0.01) + ggtitle('Parallel Coordinates Plot')
 ```
+Now, we will explore the relationship between age and depression level. This time we will draw a parallel coordinates. From the above graph, we can see that the lines are randomly crossing each other. We can hardly observe a clear patern of positively or negatively correlated lines. Thus, what we see is that age and depression level are not highly correlated.
