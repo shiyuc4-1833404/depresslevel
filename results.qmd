@@ -129,8 +129,6 @@ ggplot(merged_info, aes(Income)) +
        x = "Ratio of family income to poverty", y = "Density") +
   theme_minimal()
 ```
-Now, let's explore how people's levels of depression relate to their income ratio. We'll start by looking at the spread of income ratios in our data.This ratio compares family income to the poverty level, with numbers close to 0 meaning less income and numbers close to 5 meaning more income. We used a type of chart called a density histogram to show this.It turns out that the highest bar on the chart is at an income ratio of 5. This happens because in our data, any income higher than 5 is just marked as 5. If we don't focus too much on this part, we notice that the chart leans towards the right with a peak around 1. This tells us that a lot of the data is on the lower end of the income scale, indicating lower income levels. The way the chart stretches to the right shows that higher incomes are less common, with most of the data bunching up at the lower end. 
-
 ## Plot3
 ```{r}
 ggplot(merged_info, aes(x=Income, y=depressLevel, fill = depressLevel)) + 
