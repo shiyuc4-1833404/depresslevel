@@ -3,13 +3,14 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 # Results
 ```{r,echo=FALSE}
-# Deal with Coffeine and Depression dataset
+# Deal with Caffeine and Depression dataset
 library(ggridges)
 library(dplyr)
 library(haven)
 library(ggplot2)
 library(readr)
-data <- read_xpt("/Users/angelina/Documents/CU/23FALL/5702/Final Project/P_DR1IFF.XPT")
+# data <- read_xpt("/Users/angelina/Documents/CU/23FALL/5702/Final Project/P_DR1IFF.XPT")
+data <- read_xpt("/Users/shiyun/Desktop/P_DR1IFF.XPT")
 depress <- read_xpt("P_DPQ.XPT")
 data2 <- dplyr::select(data, SEQN, DR1ICAFF)
 data2 <- data2 |>
@@ -70,7 +71,7 @@ merged_info <- merged_info |>
     TRUE ~ as.character(maritalStatus)))
 ```
 
-## Plot7
+## Plot7  
 ```{r}
 library("ggpubr")
 high <- ggplot(data=merged_info,aes(x = CaffConsump)) +
@@ -78,29 +79,36 @@ high <- ggplot(data=merged_info,aes(x = CaffConsump)) +
   xlim(200, 800) +
   ylim(0,200) +
   ggtitle("Histogram of Caffine Consumption Lower Part") +
-  xlab("Caffine Consumption")
+  xlab("Caffine Consumption(mg)")
 low <- ggplot(data=merged_info,aes(x = CaffConsump)) +
   geom_histogram() +
   xlim(800, max(merged_info$CaffConsump)) +
   ylim(0,20) +
   ggtitle("Histogram of Caffine Consumption Higher Part") +
-  xlab("Caffine Consumption")
+  xlab("Caffine Consumption(mg)")
 ggarrange(high, low, ncol = 1, nrow = 2)
 ```
+First, let's look at how much caffeine people in the study drink each day, measured in milligrams. We've split the chart into two parts to make it easier to see what's going on. In the first chart, most people fall into the 200 to 400 milligram range. Then, the numbers spread out more evenly up to 600 milligrams. It's important to note that the two charts use different scales on the vertical axis, which helps us understand both the lower and higher caffeine consumption levels. The lower levels have more people, while the higher levels have fewer. Also, in the first chart, the bars are all next to each other without any gaps, showing a continuous range of caffeine amounts. In the second chart, there are some gaps between the bars. This tells us that most people in the study have a caffeine intake of 200 to 800 milligrams a day, but a smaller group consumes a lot more, between 1000 to 4000 milligrams.  
 
 ## Plot1
 ```{r}
-# Plot1
-ggplot(merged_info, aes(depressScore, CaffConsump)) +
-        geom_point(size=0.8) +
-  facet_wrap(~factor(depressLevel, levels=c('remission', 'mild', 'moderate',
-                                            'moderately severe', 'severe')),
-             scales="free_y")+
-  # facet_wrap(~depressLevel, scales="free_y") +
-  xlab("Depression Score") +
-  ylab("Caffeine Intake") +
-  ggtitle("Scatterplot of Caffeine Intake vs. Depression Score")
+library(GGally) 
+
+scatter_custom <- function(data, mapping, ...) {
+  ggplot(data = data, mapping = mapping) +
+    geom_point(size = 0.5, alpha = 0.3) + 
+    theme_minimal()
+}
+
+ggpairs(merged_info, 
+        columns = c(12, 2, 15, 17), 
+        title = "Scatter Plot Matrix for Dataset",
+        upper = list(continuous = wrap("cor", size = 4)),
+        lower = list(continuous = wrap(scatter_custom))
+)
 ```
+Let's dive into how people's depression levels are connected to their age, income, and how much caffeine they drink. First, I'll explain how we measure depression. Every person in our study answered 9 questions about how they've been feeling in the last two weeks. Each question tries to find out how often they've felt symptoms of depression, like feeling down or losing interest in things. They can answer with 'not at all,' 'several days,' 'more than half the days,' or 'nearly every day,' and these answers get points from 0 to 3. Then, we add up all the points from these questions. The total score can be between 0 and 27 - where 0 means no signs of depression, and 27 means very severe depression. Now, change our focus to the top row of the above graph. What we find is that income, especially when compared to the poverty line, has the strongest link to depression scores. This suggests that wealthier people often have lower depression scores. On the other hand, a person's age and the amount of caffeine they consume don't seem to have a strong relationship with their depression score.  
+
 ## Plot4
 ```{r}
 ggplot(merged_info) +
@@ -110,7 +118,7 @@ ggplot(merged_info) +
     x = "Caffeine Consumption",
     y = "depressScore")
 ```
-
+From the chart we looked at, it seems like there doens't have an association between how much caffeine people drink and their levels of depression. When people consume a lot of caffeine, like between 2000-4000 mg, they mostly have low depression scores, but this could be because there aren't many people in the study who drink that much caffeine. When we look at those who drink less caffeine, which is where most of the study's data is, the depression scores vary quite a bit. In particular, if you look at the lower left part of the chart, you'll notice that many people who don't drink much caffeine also report lower levels of depression.  
 ## Plot2
 ```{r}
 ggplot(merged_info, aes(Income)) +
@@ -121,6 +129,7 @@ ggplot(merged_info, aes(Income)) +
        x = "Ratio of family income to poverty", y = "Density") +
   theme_minimal()
 ```
+
 ## Plot3
 ```{r}
 ggplot(merged_info, aes(x=Income, y=depressLevel, fill = depressLevel)) + 
@@ -140,29 +149,25 @@ ggplot(merged_info, aes(x=fct_infreq(Race), fill = Gender)) +
   xlab("Race") +
   ggtitle("Frequency of Race by Gender")
 ```
+Let's check out the race and gender of the people who answered our survey. We grouped races into five categories: White, Black, Hispanic, Asian, and Other. The 'Other' category includes people who identify with more than one race. Most of our survey participants are White, followed by Black, then Hispanic, and the smallest group is Asian. We can also note that within each racial group, the number of females and males is pretty much even, almost like a 50-50 split.
+
 ## Plot6
 ```{r}
 library(vcd)
 library(vcdExtra)
 library(RColorBrewer)
 library(MASS)
-group <- quantile(merged_info$CaffConsump)
-merged_info$ConsumpLevel <- cut(merged_info$CaffConsump,
-                                breaks=c(group[1]-1, group[2], group[3], group[4], group[5]),
-                                right=TRUE,
-                                left=FALSE,
-                                labels = c("Low", "Mild", "Moderate",
-                                          "High"))
-merged_info <- transform(merged_info, depressLevel = factor(depressLevel, 
-                                                            levels = c("remission", "mild", 
-                                                                       "moderate", "moderately severe",
-                                                                       "severe")))
-mosaic(~ConsumpLevel + depressLevel,
-       labeling=vcd::labeling_border(rot_labels = c(0, 0),
+df <- subset(merged_info, Race %in% c("Asian", 
+                                      "Black",
+                                      "Hispanic",
+                                      "White"))
+mosaic(~depressLevel + Gender + Race,
+       labeling=vcd::labeling_border(rot_labels = c(0, 0, 30, 0),
                                   labeling_args = list(cex = 1)),
-       main="Mosaic Plot of Coffeine Consumption and Depression Level",
-       data=merged_info, direction=c("v","h"),
-       spacing = spacing_dimequal(c(.4, 0)),
+       main="Mosaic Plot of Gender, Race and Depression Level",
+       data=df, direction=c("h","v","v"),
+       spacing = spacing_dimequal(c(.4, .4, 0)),
+       rot_labels = 0,
        highlighting = "depressLevel",
        highlighting_fill = c("#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"))
 ```
@@ -170,5 +175,5 @@ mosaic(~ConsumpLevel + depressLevel,
 ## Plot8
 ```{r}
 library(GGally)
-ggparcoord(data = merged_info, columns = c(2,12,15),alphaLines = 0.01) + ggtitle('Parallel Coordinates Plot')
+ggparcoord(data = merged_info, columns = c(12,15),alphaLines = 0.01) + ggtitle('Parallel Coordinates Plot')
 ```
