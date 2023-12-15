@@ -6,7 +6,7 @@ execute:
   echo: true
 
 book:
-  title: "Caffiene Consumption and Depression"
+  title: "Lifestyle Factors and Depression Level"
   author:
     - Shiyun Chen (sc5324)
     - Anqi Wang (aw3615)
