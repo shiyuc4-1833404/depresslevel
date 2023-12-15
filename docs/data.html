@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -179,7 +213,7 @@ ul.task-list li input[type="checkbox"] {
 2. <a href="https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=Dietary&amp;Cycle=2017-2020">Dietary Interview - Individual Foods, First Day</a><br>
 3. <a href="https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=Demographics&amp;Cycle=2017-2020">Demographic Variables and Sample Weights</a></p>
 <p>All of those datasets are downloaded from CDC National Health and Nutrition Examination Survey. The survey examines a nationally representative sample of about 5,000 people each year. The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions.</p>
-<p>This project was to examine the dataset from 2017 to 2020 There were about 15,560 participants providing demographic information, 12,632 participants who gave out reliable responses to inquiries about caffeine consumption, and 8,965 participants answered questions regarding depression. Participants’ depression levels were assessed using the 9-item Patient Health Questionnaire depression scale. For each symptom question, points are scored from 0 to 3, with 0 (not at all), 1 (several days), 2 (more than half the days), and 3 (nearly every day). The caffeine intake was collected in-person in the Mobile Examination Center of NHANES. Participants were asked to provide detailed dietary intake information during the 24-hr period prior to the interview. NHANES then calculated the energy and 64 nutrients (including caffeine) of each food using the USDA’s Food and Nutrient Database for Dietary Studies, and estimated participants’ caffeine intake.</p>
+<p>This project was to examine the dataset from 2017 to 2020. There were about 15,560 participants providing demographic information, 12,632 participants who gave out reliable responses to inquiries about caffeine consumption, and 8,965 participants answered questions regarding depression. Participants’ depression levels were assessed using the 9-item Patient Health Questionnaire depression scale. For each symptom question, points are scored from 0 to 3, with 0 (not at all), 1 (several days), 2 (more than half the days), and 3 (nearly every day). The caffeine intake was collected in-person in the Mobile Examination Center of NHANES. Participants were asked to provide detailed dietary intake information during the 24-hr period prior to the interview. NHANES then calculated the energy and 64 nutrients (including caffeine) of each food using the USDA’s Food and Nutrient Database for Dietary Studies, and estimated participants’ caffeine intake. Demographic information is just registered when participants take the survey.</p>
 <p>Since the data are in the XPT (SAS file) format, we can use the haven package and the command <code>read_xpt</code> to import the data. In NHANES data, each sample person has a unique identifier called sequence number (SEQN). The next step is to merge three datasets by a unique identifier. However, the data file <code>Dietary Interview - Individual Foods</code> contains multiple records for each sample person and makes them not a unique identifier. Also, the number of participants who took the survey for caffeine consumption, demographic information, and depression are all different. When we merge data, this will cause the problem of missing data. The way to solve these issues will be described in the <code>Research plan</code> section.</p>
 </section>
 <section id="research-plan" class="level2" data-number="2.2">
@@ -191,18 +225,30 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="process-data" class="level3" data-number="2.2.2">
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="process-data"><span class="header-section-number">2.2.2</span> Process Data</h3>
-<p>For the Depression part of the merged dataset, patients will be asked nine questions and they will score them from 0 to 3. In addition to those 4 scores, participants who wrote down 7 means that they refused to answer and 9 means that they don’t know. For these cases, we just treat them as 0 in this project. In addition, participants are actually being asked 10 questions, the last question in the survey does not relate to depression symptoms over the past 2 weeks, and so we decided to delete that column. In order to analyze the depression level more easily, the scores are summed to a total score between 0 and 27. By doing this, we can now see the relationship between caffeine intake and depression level more clearly.</p>
-<p>Since the number of participants who took the survey for caffeine consumption is more than depression, there will be missing values in the merged dataset. Also, both the original dietary and depression dataset, which will be explained in the <code>missing value</code> section, include missing data. We shall delete these data by using the command <code>na.omit()</code>. After processing the data, there are 4790 participants left who took both dietary interviews and depression surveys.</p>
+<p>For the Depression part of the merged dataset, participants are actually being asked 10 questions. Since the last question in the survey does not relate to depression symptoms over the past 2 weeks, we decided to delete that column. In order to analyze the depression level with different factors more easily, the scores are summed to a total score between 0 and 27. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. Since the number of participants in three dataset are different, there will be missing values in the merged dataset. We shall delete these data by using the command <code>na.omit()</code>. After processing the data, there are 6516 participants left.</p>
 </section>
 <section id="use-exploratory-techniques" class="level3" data-number="2.2.3">
 <h3 data-number="2.2.3" class="anchored" data-anchor-id="use-exploratory-techniques"><span class="header-section-number">2.2.3</span> Use Exploratory Techniques</h3>
-<p>The dataset is being cleaned up now. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. So, we can create a new column called <code>depressionLevel</code> according to the total score of each participant and then create a scatter plot of caffeine consumption (y-axis) vs.&nbsp;depression score (x-axis) faceted by depression level so that we can learn the relationship between depression level and caffeine consumption, race, age, gender, and income ratio by observing the scale of y. We can compare the data by using histogram, mosaic plot, scatterplot, and etc.</p>
+<p>Our main question is if depression level has any association with age, race, gender, income ratio, and caffeine consumption. So, our approach is to show the main distribution of each variables first. Then, we compare it with depression level. If the variable is numerical, then we are going to use parallel coordinate plot, histogram, and etc; otherwise, we are going to use mosaic plot, bar plot, and etc. Finally, we will use scatterplot matrix to see a clear relationship between all of those variables.</p>
 </section>
 </section>
 <section id="missing-value-analysis" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</h2>
 <p>Missing Pattern for Caffeine Dataset:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(redav)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># data &lt;- read_xpt("/Users/angelina/Documents/CU/23FALL/5702/Final Project/P_DR1IFF.XPT")</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_xpt</span>(<span class="st">"/Users/shiyun/Desktop/P_DR1IFF.XPT"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">select</span>(data, SEQN, DR1ICAFF)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data2 <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEQN) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">CaffConsump =</span> <span class="fu">sum</span>(DR1ICAFF))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_missing</span>(data2,<span class="at">percent=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -210,11 +256,38 @@ ul.task-list li input[type="checkbox"] {
 <p>Since the dietary dataset includes a total of 84 variables and we only need the factor caffeine intake, I just keep SEQN and caffeine columns to analyze the missing pattern. From the graph, we can see that no SEQN is missing. There are approximately 200 missing values for caffeine consumption.</p>
 <p>Missing Pattern for Depression Dataset:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>depress <span class="ot">&lt;-</span> <span class="fu">read_xpt</span>(<span class="st">"P_DPQ.XPT"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>columns <span class="ot">&lt;-</span> <span class="fu">colnames</span>(depress)[<span class="dv">2</span><span class="sc">:</span><span class="dv">11</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>modified <span class="ot">&lt;-</span> <span class="fu">substr</span>(<span class="fu">colnames</span>(depress)[<span class="fu">colnames</span>(depress) <span class="sc">%in%</span> columns], <span class="dv">3</span>, <span class="dv">6</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(depress)[<span class="fu">colnames</span>(depress) <span class="sc">%in%</span> columns] <span class="ot">&lt;-</span> modified</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_missing</span>(depress,<span class="at">percent=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>From the graph, we can see that there is no missing value for SEQN. Question with code 100 has most missing values, which is over 2500. Question with code from 10 to 90 has approximately the similar number of missing values, which is around 400 to 500. For the missing pattern, we can see that the missing value always appeared in consecutive questions. There are over 5000 participants answer all ten questions; around 2500 participants who only does not answer Question with code 100; approximately 500 participants does not answer any of the question. Participants responded the survey starting from the question with code 010 to 100. For each of the rest four patterns: only 1 participant does not answer last two questions; 1 participant only answer the first question; 1 participant does not answer last 5 questions; and 1 participant only answer first three questions. Since the amount of people is too small, we cannot see clearly from the row count graph.</p>
+<p>Missing Pattern for Demographic Dataset:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>info <span class="ot">&lt;-</span> <span class="fu">read_xpt</span>(<span class="st">"P_DEMO.XPT"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>oldname <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"RIAGENDR"</span>, <span class="st">"RIDAGEYR"</span>, <span class="st">"RIDRETH3"</span>, <span class="st">"INDFMPIR"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>newname <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gender"</span>, <span class="st">"Age"</span>, <span class="st">"Race"</span>, <span class="st">"Income"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>info <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">select</span>(info, SEQN, RIAGENDR, RIDAGEYR, RIDRETH3,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                      INDFMPIR)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(info)[<span class="fu">names</span>(info) <span class="sc">==</span> oldname[i]] <span class="ot">&lt;-</span> newname[i]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_missing</span>(info,<span class="at">percent=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Since the demographic dataset includes a total of 29 variables and we only need the factor gender, income ratio, age, and race, I only keep those to analyze the missing pattern. From the graph, we can see that only income ratio is missing. There are approximately 2000 missing values for income ratio.</p>
 
 
 </section>

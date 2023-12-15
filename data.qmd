@@ -10,7 +10,7 @@ Below are the three datasets that we propose to draw on for the project:
 
 All of those datasets are downloaded from CDC National Health and Nutrition Examination Survey. The survey examines a nationally representative sample of about 5,000 people each year. The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions.  
 
-This project was to examine the dataset from 2017 to 2020 There were about 15,560 participants providing demographic information, 12,632 participants who gave out reliable responses to inquiries about caffeine consumption, and 8,965 participants answered questions regarding depression. Participants’ depression levels were assessed using the 9-item Patient Health Questionnaire depression scale. For each symptom question, points are scored from 0 to 3, with 0 (not at all), 1 (several days), 2 (more than half the days), and 3 (nearly every day). The caffeine intake was collected in-person in the Mobile Examination Center of NHANES. Participants were asked to provide detailed dietary intake information during the 24-hr period prior to the interview. NHANES then calculated the energy and 64 nutrients (including caffeine) of each food using the USDA’s Food and Nutrient Database for Dietary Studies, and estimated participants’ caffeine intake.  
+This project was to examine the dataset from 2017 to 2020. There were about 15,560 participants providing demographic information, 12,632 participants who gave out reliable responses to inquiries about caffeine consumption, and 8,965 participants answered questions regarding depression. Participants’ depression levels were assessed using the 9-item Patient Health Questionnaire depression scale. For each symptom question, points are scored from 0 to 3, with 0 (not at all), 1 (several days), 2 (more than half the days), and 3 (nearly every day). The caffeine intake was collected in-person in the Mobile Examination Center of NHANES. Participants were asked to provide detailed dietary intake information during the 24-hr period prior to the interview. NHANES then calculated the energy and 64 nutrients (including caffeine) of each food using the USDA’s Food and Nutrient Database for Dietary Studies, and estimated participants’ caffeine intake. Demographic information is just registered when participants take the survey.   
 
 Since the data are in the XPT (SAS file) format, we can use the haven package and the command `read_xpt` to import the data. In NHANES data, each sample person has a unique identifier called sequence number (SEQN). The next step is to merge three datasets by a unique identifier. However, the data file `Dietary Interview - Individual Foods` contains multiple records for each sample person and makes them not a unique identifier. Also, the number of participants who took the survey for caffeine consumption, demographic information, and depression are all different. When we merge data, this will cause the problem of missing data. The way to solve these issues will be described in the `Research plan` section.  
 
@@ -21,16 +21,14 @@ The plan is divided into three parts: merging datasets, processing data, and usi
 As the issue we mentioned in the above section, this problem is due to the investigation including the time of eating occasion for each person of the whole day ranging from 00:00 to 23:59. Since we only need to analyze caffeine, we can solve it by only keeping SEQN and caffeine intake columns for the Dietary dataset. Then, we can group the SEQN and sum up the caffeine intake of each participant from all time slots for the whole day. Now, we can merge three datasets together by SEQN.  
 
 ### Process Data
-For the Depression part of the merged dataset, patients will be asked nine questions and they will score them from 0 to 3. In addition to those 4 scores, participants who wrote down 7 means that they refused to answer and 9 means that they don’t know. For these cases, we just treat them as 0 in this project. In addition, participants are actually being asked 10 questions, the last question in the survey does not relate to depression symptoms over the past 2 weeks, and so we decided to delete that column. In order to analyze the depression level more easily, the scores are summed to a total score between 0 and 27. By doing this, we can now see the relationship between caffeine intake and depression level more clearly.  
-
-Since the number of participants who took the survey for caffeine consumption is more than depression, there will be missing values in the merged dataset. Also, both the original dietary and depression dataset, which will be explained in the `missing value` section, include missing data. We shall delete these data by using the command `na.omit()`. After processing the data, there are 4790 participants left who took both dietary interviews and depression surveys.    
+For the Depression part of the merged dataset, participants are actually being asked 10 questions. Since the last question in the survey does not relate to depression symptoms over the past 2 weeks, we decided to delete that column. In order to analyze the depression level with different factors more easily, the scores are summed to a total score between 0 and 27. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. Since the number of participants in three dataset are different, there will be missing values in the merged dataset. We shall delete these data by using the command `na.omit()`. After processing the data, there are 6516 participants left.
 
 ### Use Exploratory Techniques
-The dataset is being cleaned up now. According to the criterion provided by the mental health professional interview, PHQ-9 scores of 5, 10, 15, and 20 represented mild, moderate, moderately severe, and severe depression, respectively. So, we can create a new column called `depressionLevel` according to the total score of each participant and then create a scatter plot of caffeine consumption (y-axis) vs. depression score (x-axis) faceted by depression level so that we can learn the relationship between depression level and caffeine consumption, race, age, gender, and income ratio by observing the scale of y. We can compare the data by using histogram, mosaic plot, scatterplot, and etc. 
+Our main question is if depression level has any association with age, race, gender, income ratio, and caffeine consumption. So, our approach is to show the main distribution of each variables first. Then, we compare it with depression level. If the variable is numerical, then we are going to use parallel coordinate plot, histogram, and etc; otherwise, we are going to use mosaic plot, bar plot, and etc. Finally, we will use scatterplot matrix to see a clear relationship between all of those variables.
 
 ## Missing value analysis
 Missing Pattern for Caffeine Dataset:  
-```{r,echo=FALSE}
+```{r}
 library(dplyr)
 library(haven)
 library(redav)
@@ -45,16 +43,25 @@ plot_missing(data2,percent=FALSE)
 Since the dietary dataset includes a total of 84 variables and we only need the factor caffeine intake, I just keep SEQN and caffeine columns to analyze the missing pattern. From the graph, we can see that no SEQN is missing. There are approximately 200 missing values for caffeine consumption.  
 
 Missing Pattern for Depression Dataset:
-```{r,echo=FALSE}
+```{r}
 depress <- read_xpt("P_DPQ.XPT")
 columns <- colnames(depress)[2:11]
 modified <- substr(colnames(depress)[colnames(depress) %in% columns], 3, 6)
 colnames(depress)[colnames(depress) %in% columns] <- modified
 plot_missing(depress,percent=FALSE)
-# naRows <- depress[is.na(depress$Q100) & is.na(depress$Q090) & !is.na(depress$Q010) &
-#                   is.na(depress$Q020) & is.na(depress$Q030) & is.na(depress$Q040) &
-#                   is.na(depress$Q050) & is.na(depress$Q060) & is.na(depress$Q070) &
-#                   is.na(depress$Q080), ]
-# print(naRows)
 ```
-From the graph, we can see that there is no missing value for SEQN. Question with code 100 has most missing values, which is over 2500. Question with code from 10 to 90 has approximately the similar number of missing values, which is around 400 to 500. For the missing pattern, we can see that the missing value always appeared in consecutive questions. There are over 5000 participants answer all ten questions; around 2500 participants who only does not answer Question with code 100; approximately 500 participants does not answer any of the question. Participants responded the survey starting from the question with code 010 to 100. For each of the rest four patterns: only 1 participant does not answer last two questions; 1 participant only answer the first question; 1 participant does not answer last 5 questions; and 1 participant only answer first three questions. Since the amount of people is too small, we cannot see clearly from the row count graph.  
+From the graph, we can see that there is no missing value for SEQN. Question with code 100 has most missing values, which is over 2500. Question with code from 10 to 90 has approximately the similar number of missing values, which is around 400 to 500. For the missing pattern, we can see that the missing value always appeared in consecutive questions. There are over 5000 participants answer all ten questions; around 2500 participants who only does not answer Question with code 100; approximately 500 participants does not answer any of the question. Participants responded the survey starting from the question with code 010 to 100. For each of the rest four patterns: only 1 participant does not answer last two questions; 1 participant only answer the first question; 1 participant does not answer last 5 questions; and 1 participant only answer first three questions. Since the amount of people is too small, we cannot see clearly from the row count graph.
+
+Missing Pattern for Demographic Dataset:
+```{r}
+info <- read_xpt("P_DEMO.XPT")
+oldname <- c("RIAGENDR", "RIDAGEYR", "RIDRETH3", "INDFMPIR")
+newname <- c("Gender", "Age", "Race", "Income")
+info <- dplyr::select(info, SEQN, RIAGENDR, RIDAGEYR, RIDRETH3,
+                      INDFMPIR)
+for (i in 1:4) {
+  names(info)[names(info) == oldname[i]] <- newname[i]
+}
+plot_missing(info,percent=FALSE)
+```
+Since the demographic dataset includes a total of 29 variables and we only need the factor gender, income ratio, age, and race, I only keep those to analyze the missing pattern. From the graph, we can see that only income ratio is missing. There are approximately 2000 missing values for income ratio.  
