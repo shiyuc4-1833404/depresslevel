@@ -19,5 +19,8 @@
   <option value="Severe">Severe</option>
 </select>
 
+<p>This interactive bar plot visualizes the income ratio across various levels of depression. You can select a category from the drop-down menu to view the corresponding data.</p>
+
+
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="scripts/myscript.js"></script>
