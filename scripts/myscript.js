@@ -68,6 +68,8 @@
 svg.append("g")
   .attr("class", "y-axis");
 
+const color = d3.scaleSequential(d3.interpolateBlues)
+               .domain([0, d3.max(dataSets.Remission, d => d.Frequency)]); // Adjust domain based on your data range
 
 // Update function
 function update(selectedOption) {
@@ -75,22 +77,26 @@ function update(selectedOption) {
     const data = dataSets[selectedOption];
 
     // Update scales
-    x.domain(data.map(d => d.Income)); // Use 'Income' for the x-axis
-    y.domain([0, d3.max(data, d => d.Frequency)]); // Use 'Frequency' for the y-axis
+    x.domain(data.map(d => d.Income));
+    y.domain([0, d3.max(data, d => d.Frequency)]);
+
+    // Update the color scale domain based on the current dataset
+    color.domain([0, d3.max(data, d => d.Frequency)]);
 
     // Bind data to bars
     const bars = svg.selectAll(".bar")
-        .data(data, d => d.Income); // Use 'Income' as key
+        .data(data, d => d.Income);
 
     // Enter new bars
     bars.enter().append("rect")
         .attr("class", "bar")
         .attr("x", d => x(d.Income))
         .attr("width", x.bandwidth())
-        .merge(bars) // Merge with existing bars
+        .merge(bars)
         .transition().duration(1000)
         .attr("y", d => y(d.Frequency))
-        .attr("height", d => height - y(d.Frequency));
+        .attr("height", d => height - y(d.Frequency))
+        .attr("fill", d => color(d.Frequency)); // Apply sequential color scale here
 
     // Update axes
     svg.select(".x-axis").call(d3.axisBottom(x));
